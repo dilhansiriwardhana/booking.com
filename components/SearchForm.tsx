@@ -201,7 +201,7 @@ function SearchForm() {
           <div className="grid items-center flex-1">
             <FormField
               control={form.control}
-              name="rooms"
+              name="no_rooms"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-white">Rooms</FormLabel>
