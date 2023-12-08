@@ -1,26 +1,24 @@
 "use client";
-import * as z from "zod";
 
-import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { BedDoubleIcon, CalendarIcon } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { format } from "date-fns";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { BedDoubleIcon, CalendarIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
 
 export const formSchema = z.object({
@@ -35,10 +33,12 @@ export const formSchema = z.object({
       message: "Please select at least 1 adult",
     })
     .max(12, { message: "Max 12 adults Occupancy" }),
-  Children: z.string().min(0).max(12, {
+  children: z.string().min(0).max(12, {
     message: "Max 12 children Occupancy",
   }),
-  rooms: z.string().min(1, {}),
+  rooms: z.string().min(1, {
+    message: "Please select at least 1 room",
+  }),
 });
 
 function SearchForm() {
@@ -53,7 +53,7 @@ function SearchForm() {
         to: undefined,
       },
       adults: "1",
-      Children: "0",
+      children: "0",
       rooms: "1",
     },
   });
@@ -74,10 +74,10 @@ function SearchForm() {
     const url = new URL("https://www.booking.com/searchresults.html");
     url.searchParams.set("ss", values.location);
     url.searchParams.set("group_adults", values.adults);
-    url.searchParams.set("group_children", values.Children);
-    url.searchParams.set("no-rooms", values.rooms);
-    url.searchParams.set("checkin", values.checkin);
-    url.searchParams.set("checkout", values.checkout);
+    url.searchParams.set("group_children", values.children);
+    url.searchParams.set("no_rooms", values.rooms);
+    url.searchParams.set("checkin", checkin);
+    url.searchParams.set("checkout", checkout);
 
     router.push(`/search?url=${url.href}`);
   }
@@ -86,9 +86,9 @@ function SearchForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col lg:flex-row lg:max-w-6xl lg:mx-auto items-center justify-center space-x-0 lg:space-x-2 space-y-4 lg:space-y-0 rounded-lg "
+        className="flex flex-col lg:flex-row lg:max-w-6xl lg:mx-auto items-center justify-center space-x-0 lg:space-x-2 space-y-4 lg:space-y-0 rounded-lg"
       >
-        <div className="grid w-full lg:max-w-sm items-center gap-1 5">
+        <div className="grid w-full lg:max-w-sm items-center gap-1.5">
           <FormField
             control={form.control}
             name="location"
@@ -100,6 +100,7 @@ function SearchForm() {
                 </FormLabel>
 
                 <FormMessage />
+
                 <FormControl>
                   <Input placeholder="London, UK" {...field} />
                 </FormControl>
@@ -154,7 +155,7 @@ function SearchForm() {
                       onSelect={field.onChange}
                       numberOfMonths={2}
                       disabled={(date) =>
-                        date < new Date(new Date().setHours(0, 0, 0))
+                        date < new Date(new Date().setHours(0, 0, 0, 0))
                       }
                     />
                   </PopoverContent>
@@ -180,12 +181,13 @@ function SearchForm() {
               )}
             />
           </div>
-          <div className="grid  items-center flex-1">
+
+          <div className="grid items-center flex-1">
             <FormField
               control={form.control}
               name="children"
               render={({ field }) => (
-                <FormItem className="flex flex-col ">
+                <FormItem className="flex flex-col">
                   <FormLabel className="text-white">Children</FormLabel>
                   <FormMessage />
                   <FormControl>
@@ -195,13 +197,14 @@ function SearchForm() {
               )}
             />
           </div>
+
           <div className="grid items-center flex-1">
             <FormField
               control={form.control}
               name="rooms"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-white">rooms</FormLabel>
+                  <FormLabel className="text-white">Rooms</FormLabel>
                   <FormMessage />
                   <FormControl>
                     <Input type="number" placeholder="rooms" {...field} />
