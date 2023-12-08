@@ -16,6 +16,19 @@ export type SearchParams = {
   checkout: string;
 };
 
+// Define the type for each item in the listings array
+type ListingItem = {
+  url: string;
+  link: string;
+  title: string;
+  description: string;
+  rating_word: string;
+  rating_count: string;
+  rating: string;
+  booking_metadata: string;
+  price: string;
+};
+
 async function SearchPage({ searchParams }: Props) {
   if (!searchParams.url) notFound();
 
@@ -45,7 +58,7 @@ async function SearchPage({ searchParams }: Props) {
         </h3>
 
         <div className="space-y-2 mt-5">
-          {results.content.listings.map((item, i) => (
+          {results.content.listings.map((item: ListingItem, i: number) => (
             <div
               key={i}
               className="flex space-y-2 justify-between space-x-4 p-5 border rounded-lg"
