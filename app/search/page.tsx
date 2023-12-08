@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { fetchResults } from "@/lib/fetchResults";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -16,27 +15,12 @@ export type SearchParams = {
   checkout: string;
 };
 
-// Define the type for each item in the listings array
-type ListingItem = {
-  url: string;
-  link: string;
-  title: string;
-  description: string;
-  rating_word: string;
-  rating_count: string;
-  rating: string;
-  booking_metadata: string;
-  price: string;
-};
-
 async function SearchPage({ searchParams }: Props) {
-  if (!searchParams.url) notFound();
+  if (!searchParams.url) return notFound();
 
   const results = await fetchResults(searchParams);
 
   if (!results) return <div>No results...</div>;
-
-  console.log(results);
 
   return (
     <section>
@@ -46,8 +30,7 @@ async function SearchPage({ searchParams }: Props) {
         <h2 className="pb-3">
           Dates of trip:
           <span className="italic ml-2">
-            {" "}
-            {searchParams.checkin} to {searchParams.checkout}{" "}
+            {searchParams.checkin} to {searchParams.checkout}
           </span>
         </h2>
 
@@ -58,7 +41,7 @@ async function SearchPage({ searchParams }: Props) {
         </h3>
 
         <div className="space-y-2 mt-5">
-          {results.content.listings.map((item: ListingItem, i: number) => (
+          {results.content.listings.map((item, i) => (
             <div
               key={i}
               className="flex space-y-2 justify-between space-x-4 p-5 border rounded-lg"
@@ -79,6 +62,7 @@ async function SearchPage({ searchParams }: Props) {
                   </Link>
                   <p className="text-xs">{item.description}</p>
                 </div>
+
                 <div className="flex flex-col justify-between">
                   <div className="flex items-start justify-end space-x-2 text-right">
                     <div>
@@ -92,7 +76,7 @@ async function SearchPage({ searchParams }: Props) {
                   </div>
 
                   <div className="text-right">
-                    <p className="text-xs">{item.booking_metadata}</p>
+                    <p className="text-xs ">{item.booking_metadata}</p>
                     <p className="text-2xl font-bold">{item.price}</p>
                   </div>
                 </div>
