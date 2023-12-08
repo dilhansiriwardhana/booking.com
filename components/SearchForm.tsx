@@ -38,6 +38,8 @@ export const formSchema = z.object({
   Children: z.string().min(0).max(12, {
     message: "Please select at least 1 room",
   }),
+  rooms: z.string(),
+  message: "Please select at least 1 room",
 });
 
 function SearchForm() {
